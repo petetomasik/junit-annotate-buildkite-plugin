@@ -7,7 +7,8 @@ if [[ -z "${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_ARTIFACTS:-}" ]]; then
   exit 1
 fi
 
-PLUGIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)/.."
+#PLUGIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)/.."
+PLUGIN_DIR="/workspace/plugins/buildkite/github-com-petetomasik-junit-annotate-buildkite-plugin-k8s-debug"
 MAX_SIZE=1024 # in KB
 RUBY_IMAGE="${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_RUBY_IMAGE:-ruby:3.1-alpine@sha256:a39e26d0598837f08c75a42c8b0886d9ed5cc862c4b535662922ee1d05272fca}"
 
@@ -34,28 +35,47 @@ function check_size {
 trap cleanup EXIT
 
 echo "--- :junit: Download the junits"
+echo "[DEBUG] Skipping..."
 if ! buildkite-agent artifact download "${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_ARTIFACTS}" "$artifacts_dir"; then
   echo "--- :boom: Could not download artifacts"
   exit "${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILED_DOWNLOAD_EXIT_CODE:-2}"
 fi
 
 echo "--- :junit: Processing the junits"
+######## DEBUG ########
+echo "[DEBUG] PLUGIN_DIR:          $PLUGIN_DIR"
+echo "[DEBUG] PLUGIN_DIR/ruby:     $PLUGIN_DIR/ruby"
+echo "[DEBUG] artifacts_dir:       $artifacts_dir"
+echo "[DEBUG] PWD:                 $(pwd)"
+
+mkdir -p ${PLUGIN_DIR}/foo && touch ${PLUGIN_DIR}/foo/bar
+chmod -R 0777 ${PLUGIN_DIR}
+echo "ls -lah $PLUGIN_DIR/"
+ls -lah $PLUGIN_DIR/
+#echo "ls -lah $PLUGIN_DIR/ruby/bin"
+#ls -lah $PLUGIN_DIR/ruby/bin
+
+#find /workspace -iname '*ruby*'
+######## DEBUG ########
 
 set +e
 docker \
-  --log-level "error" \
+  --log-level "debug" \
   run \
-    --rm \
-    --volume "$artifacts_dir:/junits" \
-    --volume "$PLUGIN_DIR/ruby:/src" \
+	  --rm \
+    --volume "${artifacts_dir}:/junits" \
+    --volume "${PLUGIN_DIR}/ruby:/src" \
+    --volume "${PLUGIN_DIR}:/foo" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_JOB_UUID_FILE_PATTERN=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_JOB_UUID_FILE_PATTERN:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILURE_FORMAT=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILURE_FORMAT:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SLOWEST=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SLOWEST:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SKIPPED=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SKIPPED:-}" \
-    "${RUBY_IMAGE}" ruby /src/bin/annotate /junits \
-      > "$annotation_path"
+    "${RUBY_IMAGE}" sleep 600
+    #"${RUBY_IMAGE}" ruby /src/bin/annotate /junits \
+    #  > "$annotation_path"
 
 exit_code=$?
+
 set -e
 
 if [[ $exit_code -eq 64 ]]; then # special exit code to signal test failures
