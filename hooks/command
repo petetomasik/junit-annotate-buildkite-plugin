@@ -60,7 +60,7 @@ ls -lah $PLUGIN_DIR/ruby/bin
 #find /workspace -iname '*ruby*'
 ######## DEBUG ########
 
-set +e
+#set +e
 docker \
   --log-level "debug" \
   run \
