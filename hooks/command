@@ -61,11 +61,6 @@ ls -lah $PLUGIN_DIR/ruby/bin
 ######## DEBUG ########
 
 set +e
-pwd
-whoami
-
-docker run --rm "${RUBY_IMAGE}" ruby --version
-
 docker \
   --log-level "debug" \
   run \
@@ -77,7 +72,7 @@ docker \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILURE_FORMAT=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILURE_FORMAT:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SLOWEST=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SLOWEST:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SKIPPED=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SKIPPED:-}" \
-    "${RUBY_IMAGE}" ls -lah /foo
+		"${RUBY_IMAGE}" ls -lah /junits
     #"${RUBY_IMAGE}" ruby /src/bin/annotate /junits \
     #  > "$annotation_path"
 
