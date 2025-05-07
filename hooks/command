@@ -64,6 +64,8 @@ ls -lah $PLUGIN_DIR/ruby/bin
 which docker
 docker version
 
+docker run hello-world
+
 docker \
   --log-level "debug" \
   run \
