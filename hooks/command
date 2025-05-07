@@ -52,6 +52,8 @@ mkdir -p ${PLUGIN_DIR}/foo && touch ${PLUGIN_DIR}/foo/bar
 chmod -R 0777 ${PLUGIN_DIR}
 echo "ls -lah $PLUGIN_DIR/"
 ls -lah $PLUGIN_DIR/
+echo "ls -lah $PLUGIN_DIR/ruby"
+ls -lah $PLUGIN_DIR/ruby
 #echo "ls -lah $PLUGIN_DIR/ruby/bin"
 #ls -lah $PLUGIN_DIR/ruby/bin
 
@@ -70,7 +72,7 @@ docker \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILURE_FORMAT=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_FAILURE_FORMAT:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SLOWEST=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SLOWEST:-}" \
     --env "BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SKIPPED=${BUILDKITE_PLUGIN_JUNIT_ANNOTATE_REPORT_SKIPPED:-}" \
-    "${RUBY_IMAGE}" ls -lah /src/bin/
+    "${RUBY_IMAGE}" ls -lah /src/
     #"${RUBY_IMAGE}" ruby /src/bin/annotate /junits \
     #  > "$annotation_path"
 
