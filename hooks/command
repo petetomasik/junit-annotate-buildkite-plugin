@@ -79,6 +79,7 @@ docker \
     #"${RUBY_IMAGE}" ruby /src/bin/annotate /junits \
     #  > "$annotation_path"
 
+docker ps
 exit_code=$?
 
 set -e
