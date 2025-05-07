@@ -64,7 +64,7 @@ set +e
 docker \
   --log-level "debug" \
   run \
-	  --rm \
+	  --detach \
     --volume "${artifacts_dir}:/junits" \
     --volume "${PLUGIN_DIR}/ruby:/src" \
 		--volume "${PLUGIN_DIR}/foo:/foo" \
