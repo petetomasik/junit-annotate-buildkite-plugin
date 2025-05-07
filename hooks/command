@@ -61,6 +61,9 @@ ls -lah $PLUGIN_DIR/ruby/bin
 ######## DEBUG ########
 
 #set +e
+which docker
+docker --version
+
 docker \
   --log-level "debug" \
   run \
